@@ -120,3 +120,83 @@ public:
         }
     }
 };
+
+
+//BEST
+//APPROACH- CONSIDER 1ST ROW AND COLUMN AS REFERNCE FOR PUTTING 0 VALUE
+//TC- O(2*m*n+m+n)
+//SC- O(1)
+//MY CODE
+
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        int m=matrix.size();
+        int n=matrix[0].size();
+        
+        int columnFlag=0;  //if first row contains any 0 value   
+        for(int i=0;i<m;i++){
+            if(matrix[i][0]==0)
+                columnFlag=1;
+            for(int j=1;j<n;j++){
+                if(matrix[i][j]==0){
+                    matrix[0][j]=0;
+                    matrix[i][0]=0;
+                }
+            }
+        }
+        //filling all values except 1st row and 1st column
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                if(matrix[i][0]==0 || matrix[0][j]==0)
+                    matrix[i][j]=0;
+            }
+        }
+        
+        //1st column-> 0,0 is deciding point for 1st column
+        for(int j=0;j<n;j++){
+            if(matrix[0][0]==0)
+                matrix[0][j]=0;
+        }
+        //1st row-> if flag is set, then 1st row is 0
+        if(columnFlag==1){
+            for(int i=0;i<m;i++)
+                matrix[i][0]=0;
+        }
+    }
+};
+
+
+
+//TC- O(2*m*n)
+//SC- O(1)
+//STRIVER CODE
+
+void setZeroes(vector < vector < int >> & matrix) {
+  int col0 = 1, rows = matrix.size(), cols = matrix[0].size();
+  for (int i = 0; i < rows; i++) {
+    //checking if 0 is present in the 0th column or not
+    if (matrix[i][0] == 0) col0 = 0;
+    for (int j = 1; j < cols; j++) {
+      if (matrix[i][j] == 0) {
+        matrix[i][0] = 0;
+        matrix[0][j] = 0;
+      }
+    }
+  }
+  //traversing in the reverse direction and
+  //checking if the row or col has 0 or not
+  //and setting values of matrix accordingly.
+  for (int i = rows - 1; i >= 0; i--) {
+    for (int j = cols - 1; j >= 1; j--) {
+      if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+        matrix[i][j] = 0;
+      }
+    }
+    if (col0 == 0) {
+      matrix[i][0] = 0;
+    }
+
+  }
+
+}
