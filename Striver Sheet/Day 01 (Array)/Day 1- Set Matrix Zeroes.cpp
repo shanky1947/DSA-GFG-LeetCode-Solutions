@@ -43,8 +43,10 @@ Could you devise a constant space solution?
 */
 
 //BRUTE FORCE
+//APPROACH- MAKE A COPY OF MATRIX AND MAKE CHANGES IN THAT DUMMY ARRAY
 //TC- O(m*n*(m+n))
 //SC- O(m*n)
+
 class Solution {
 public:
     void setZeroes(vector<vector<int>>& matrix) {
@@ -69,6 +71,51 @@ public:
         for(int i=0;i<m;i++){
             for(int j=0;j<n;j++){
                 matrix[i][j]=copy[i][j];
+            }
+        }
+    }
+};
+
+//BETTER 
+//APPROACH- TAKE TWO DUMMY ARRAYS OF SIZE OF ROW AND COLUMN AND MAKE THEM 1 AS FIND 0
+//TC- O(m*n)
+//SC- O(m+n)
+
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        int m = matrix.size();
+        int n = matrix[0].size();
+        
+        int *row = new int[m]();
+        int *col = new int[n]();
+        
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]==0){
+                    row[i]=1;
+                    col[j]=1;
+                }
+            }
+        }
+        // for(int i=0;i<m;i++){
+        //     if(row[i]==1){
+        //         for(int j=0;j<n;j++){
+        //             matrix[i][j]=0;
+        //         }
+        //     }
+        // }
+        // for(int j=0;j<n;j++){
+        //     if(col[j]==1){
+        //         for(int i=0;i<m;i++){
+        //             matrix[i][j]=0;
+        //         }
+        //     }
+        // }
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(row[i]==1 || col[j]==1)
+                    matrix[i][j]=0;
             }
         }
     }
