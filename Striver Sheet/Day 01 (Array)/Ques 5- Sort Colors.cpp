@@ -40,9 +40,6 @@ Follow up: Could you come up with a one-pass algorithm using only constant extra
 */
 
 
-//FIND 1 VALUE-> GIVEN ROW NO., COL NO.-> (R-1) C (C-1)
-
-//FIND 1 COMPLETE ROW-> res*=(n-i)-> res/=(i+1)
 
 //BRUTE FORCE
 //APPROACH- USE SORT FUNCTION OF STL
