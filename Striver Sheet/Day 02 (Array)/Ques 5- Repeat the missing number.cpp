@@ -51,49 +51,79 @@ A = 3, B = 4
 
 
 //BETTER
-//APPROACH- X-Y=S1, X*X-Y*Y=S2 GET VALUE X+Y FROM HERE, THEN FIND VALUE OF X AND Y BY SOLVING BOTH
+//APPROACH- X-Y=S1, X*X-Y*Y=S2 GET VALUE X+Y FROM HERE, THEN FIND VALUE OF X AND Y BY SOLVING BOTH, X-SUM FROM 1-N, Y-SUM OF ARRAY
 //TC- O(N)
 //SC- O(1)
 
-class Solution {
-public:
-    void sortColors(vector<int>& nums) {
-        int z=0, o=0, t=0;
-        for(int i=0;i<nums.size();i++){
-            if(nums[i]==0)
-                z++;
-            else if(nums[i]==1)
-                o++;
-            else
-                t++;
-        }
-        int i=0;
-        while(z-- >0)
-            nums[i++]=0;
-        while(o-- >0)
-            nums[i++]=1;
-        while(t-- >0)
-            nums[i++]=2;
+vector<int> Solution::repeatedNumber(const vector<int> &A) {
+    long long s1=0, s2=0;
+    long long x=0, y=0;
+    long long xx=0, yy=0;
+    long long n=A.size();
+
+    for(int i=0;i<n;i++){
+        x=x+(long long)A[i];
+        xx=xx+(long long)(A[i]*A[i]);
     }
-};
+    y=(n*(long long)(n+1))/(long long)2;
+    yy=(n*(long long)(n+1)*(long long)(2*n+1))/(long long)6;
+
+    s1=abs(x-y);
+    s2=abs(xx-yy);
+
+    int xno=(s1+s2)/2;
+    int yno=(s2-s1)/2;
+
+    vector<int> ans;
+    ans.push_back(yno);
+    ans.push_back(xno);
+    return ans;
+}
+
 
 
 //BEST
-//APPROACH- USING XOR
+//APPROACH- USING XOR-> X-Y=NUM, X-XOR OF ARRAY NOS, Y-XOR OF TOTAL NOS, TAKE NOS WHOSE 1ST BIT IS SET AS NUM IN 1 BASKET(1ST NO), REST IN OTHERS(2ND NO)
 //TC- O(n)
 //SC- O(1)
 
-class Solution {
-public:
-    void sortColors(vector<int>& nums) {
-        int low=0, mid=0, high=nums.size()-1;
-        while(mid<=high){
-            if(nums[mid]==1)
-                mid++;
-            else if(nums[mid]==0)
-                swap(nums[low++], nums[mid++]);
-            else if(nums[mid]==2)
-                swap(nums[mid], nums[high--]);
-        }
+vector<int> Solution::repeatedNumber(const vector<int> &A) {
+    int x=A[0];
+    int n=A.size();
+    for(int i=1;i<n;i++){
+        x=x^A[i];
     }
-};
+    int y=1;
+    for(int i=2;i<=n;i++){
+        y=y^i;
+    }
+    int num=x^y;
+    //Getting the right most set bit of num- and from negation, -1 will make set bit as unset and
+    //negation will make it set again hence set after end
+    int setBitNo = num & ~(num - 1);
+
+    int set1=0, set2=0;
+    for(int i=0;i<n;i++){
+        if(A[i] & setBitNo)    //setBitNo has 1000.., so output will be if 1st bit is set
+            set1=set1^A[i];
+        else
+            set2=set2^A[i];
+    }
+    for(int i=1;i<=n;i++){
+        if(i & setBitNo)
+            set1=set1^i;
+        else
+            set2=set2^i;
+    }
+    int xno=set1;
+    int yno=set2;
+
+    int xcount=0;
+    for(int i=0;i<n;i++){
+        if(A[i]==xno)
+            xcount++;
+    }
+    if(xcount>0)
+        return {xno, yno};
+    return {yno, xno};
+}
