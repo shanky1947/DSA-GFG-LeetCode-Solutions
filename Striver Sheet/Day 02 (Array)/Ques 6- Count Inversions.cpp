@@ -1,63 +1,101 @@
 /*
-Q Link- https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
+Q Link- https://www.codingninjas.com/codestudio/problems/615?topList=striver-sde-sheet-problems
 
-121. Best Time to Buy and Sell Stock
-Easy
+Count Inversions
+Difficulty: MEDIUM
+Contributed By
+Deep Mavani
+|
+Level 1
+Avg. time to solve
+40 min
+Success Rate
+55%
+Problem Statement
+For a given integer array/list 'ARR' of size 'N', find the total number of 'Inversions' that may exist.
+An inversion is defined for a pair of integers in the array/list when the following two conditions are met.
+A pair ('ARR[i]', 'ARR[j]') is said to be an inversion when:
 
-14984
+1. 'ARR[i] > 'ARR[j]' 
+2. 'i' < 'j'
 
-504
+Where 'i' and 'j' denote the indices ranging from [0, 'N').
+Input Format :
+The first line of input contains an integer 'N', denoting the size of the array.
 
-Add to List
+The second line of input contains 'N' integers separated by a single space, denoting the elements of the array 'ARR'.
+Output Format :
+Print a single line containing a single integer that denotes the total count of inversions in the input array.
+Note:
+You are not required to print anything, it has been already taken care of. Just implement the given function.  
+Constraints :
+1 <= N <= 10^5 
+1 <= ARR[i] <= 10^9
 
-Share
-You are given an array prices where prices[i] is the price of a given stock on the ith day.
+Where 'ARR[i]' denotes the array element at 'ith' index.
 
-You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
-
-Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
-
- 
-
-Example 1:
-
-Input: prices = [7,1,5,3,6,4]
-Output: 5
-Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
-Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
-Example 2:
-
-Input: prices = [7,6,4,3,1]
-Output: 0
-Explanation: In this case, no transactions are done and the max profit = 0.
- 
-
-Constraints:
-
-1 <= prices.length <= 105
-0 <= prices[i] <= 104
-Accepted
-2,018,206
-Submissions
-3,744,033
+Time Limit: 1 sec
+Sample Input 1 :
+3
+3 2 1
+Sample Output 1 :
+3
+Explanation Of Sample Output 1:
+We have a total of 3 pairs which satisfy the condition of inversion. (3, 2), (2, 1) and (3, 1).
+Sample Input 2 :
+5
+2 5 1 3 4
+Sample Output 2 :
+4
+Explanation Of Sample Output 1:
+We have a total of 4 pairs which satisfy the condition of inversion. (2, 1), (5, 1), (5, 3) and (5, 4).
 */
 
 
 
+//BRUTE FORCE
+//APPROACH- USE TWO LOOPS
+//TC- O(n*n)
+//SC- O(1)
 
 //BEST
-//APPROACH- MAINTAIN MINPRICE OF ALL AND MAXPROFIT BY SUBTRACTING FROM MINPRICE AND CURRENT VALUE
+//APPROACH- USE MERGE SORT CONCEPT TO CALCULATE SMALLER NUMBERS IN RIGHT PART-> (MID-I+1)
 //TC- O(n)
 //SC- O(1)
 
-class Solution {
-public:
-    int maxProfit(vector<int>& prices) {
-        int minPrice=prices[0], maxP=0;
-        for(int i=1;i<prices.size();i++){
-            minPrice=min(prices[i], minPrice);
-            maxP = max(maxP, prices[i]-minPrice);
+long long merge(long long *arr, int si, int mid, int ei){
+    int i=si, j=mid+1, k=0;
+    int temp[ei-si+1];
+    int count=0;
+    while(i<=mid && j<=ei){
+        if(arr[i]<=arr[j]){
+            temp[k++]=arr[i++];
         }
-        return maxP;
+        else{
+            temp[k++]=arr[j++];
+            count+=(mid-i+1);
+        }
     }
-};
+    while(i<=mid)
+        temp[k++]=arr[i++];
+   	while(j<=ei)
+        temp[k++]=arr[j++];
+   	for(int i=si, k=0; i<=ei; i++, k++)
+        arr[i]=temp[k];
+    return count;
+}
+
+long long mergeSort(long long *arr, int si, int ei){
+    int count=0;
+    if(si<ei){
+        int mid=(si+ei)/2;
+        count+=mergeSort(arr, si, mid);
+        count+=mergeSort(arr, mid+1, ei);
+        count+=merge(arr, si, mid, ei);
+    }
+    return count;
+}
+
+long long getInversions(long long *arr, int n){
+    return mergeSort(arr, 0, n-1);
+}
