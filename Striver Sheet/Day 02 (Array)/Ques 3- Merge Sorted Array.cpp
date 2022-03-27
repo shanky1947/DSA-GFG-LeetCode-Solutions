@@ -4,9 +4,9 @@ Q Link- https://leetcode.com/problems/merge-sorted-array/
 88. Merge Sorted Array
 Easy
 
-3874
+3889
 
-371
+374
 
 Add to List
 
@@ -52,77 +52,88 @@ nums2.length == n
 Follow up: Can you come up with an algorithm that runs in O(m + n) time?
 
 Accepted
-1,304,420
+1,306,490
 Submissions
-2,995,835
+2,999,805
 */
 
 
-//FIND 1 VALUE-> GIVEN ROW NO., COL NO.-> (R-1) C (C-1)
 
-//FIND 1 COMPLETE ROW-> res*=(n-i)-> res/=(i+1)
 
 //BRUTE FORCE
-//APPROACH- FIND ALL PERMUTATIONS, FIND NEXT PERMUATION THAN GIVEN
-//TC- O(n!*n)
-//SC- O(n)
+//APPROACH- USING SORT FUNCTION, ADD 2ND ARRAY NO.S TO 1ST ARRAY AND USE SORT FUNCTION
+//TC- O(m+nlogn)
+//SC- O(1)
 
 
-//BEST 
-//APPROACH- FIND NEXT SMALLEST FROM LAST, REPLACE THAT WITH GREATER THAN LAST, REVERSE REMAINING FROM LAST
-//TC- O(n)
-//SC- O(n)
+//BETTER
+//APPROACH- REPLACE 2ND ARRAY ELEMENT INTO 1ST IF SMALLER AND SORT 2ND ARRAY USING INSERTION SORT
+//TC- O(n*m)
+//SC- O(1)
 
 class Solution {
 public:
-    void nextPermutation(vector<int>& nums) {
-        int j, i=nums.size()-1;
-        for(;i>0;i--){
-            if(nums[i]>nums[i-1]){
-                j=i-1;
-                break;
+    void merge(vector<int>& arr1, int n, vector<int>& arr2, int m) {
+        if(arr2.size()==0)
+            return ;
+          int i, k;
+        for (i = 0; i < n; i++) {
+            if (arr1[i] > arr2[0]) {
+              int temp = arr1[i];
+              arr1[i] = arr2[0];
+              arr2[0] = temp;
             }
+
+            // then sort the second array
+            int first = arr2[0];
+            // insertion sort is used here
+            for (k = 1; k < m && arr2[k] < first; k++) {
+              arr2[k - 1] = arr2[k];
+            }
+            arr2[k - 1] = first;
         }
-        if(i==0){
-            reverse(nums.begin(),nums.end());
-            return;
+        for(int i=n, k=0; k<m; i++, k++){
+            arr1[i]=arr2[k];
         }
-        int k=nums.size()-1;
-        for(;k>j;k--){
-            if(nums[k]>nums[j])
-                break;
-        }
-        swap(nums[k],nums[j]);
-        reverse(nums.begin()+j+1, nums.end());
     }
 };
 
 
-//BETTER 
-//APPROACH- SAME AS ABOVE, JUST CLEAN CODE
-//TC- O(n)
-//SC- O(n)
+//BEST
+//APPROACH- GAP METHOD
+//TC- O(logn)
+//SC- O(1)
 
 class Solution {
 public:
-    void reverse(int i, vector<int>& nums){
-        int j=nums.size()-1;
-        while(i<j){
-            swap(nums[i++], nums[j--]);
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        if(nums2.size()==0)
+            return;
+        int gap = ceil((float)(n + m)/2);
+        while(gap>0){
+            int i=0, k=gap;
+            while(k<m){
+                if(nums1[i]>nums1[k])
+                    swap(nums1[i], nums1[k]);
+                i++;    k++;
+            }
+            k=k-m;
+            while(i<m && k<n){
+                if(nums1[i]>nums2[k])
+                    swap(nums1[i], nums2[k]);
+                i++;    k++;
+            }
+            i=0;
+            while(k<n){
+                if(nums2[i]>nums2[k])
+                    swap(nums2[i], nums2[k]);
+                i++;    k++;
+            }
+            if(gap==1)   //as ceil(1/2=0.5)==1, infinte loop
+                gap=0;
+            gap=ceil((float)(gap)/2);    //ceil as 3/2=1.5=1, missed one iteration
         }
-    }
-    void nextPermutation(vector<int>& nums) {
-        int i=nums.size()-2;
-        while(i>=0 && nums[i]>=nums[i+1])
-            i--;
-        if(i>=0){
-            int j=nums.size()-1;
-            while(j>0 && nums[j]<=nums[i])
-                j--;
-            cout<<i<<" "<<j;
-            swap(nums[i], nums[j]);
-        }
-        reverse(i+1, nums);
+        for(int i=m, k=0;k<n; i++, k++)
+            nums1[i]=nums2[k];
     }
 };
-
