@@ -60,7 +60,7 @@ We have a total of 4 pairs which satisfy the condition of inversion. (2, 1), (5,
 
 //BEST
 //APPROACH- USE MERGE SORT CONCEPT TO CALCULATE SMALLER NUMBERS IN RIGHT PART-> (MID-I+1)
-//TC- O(n)
+//TC- O(n*logn)
 //SC- O(1)
 
 long long merge(long long *arr, int si, int mid, int ei){
